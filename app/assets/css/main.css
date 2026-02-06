@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Default (localhost) */
+:root {
+  --brand-color: #ef4444; /* Red */
+}
+
+/* FIR Theme */
+[data-theme='fir'] {
+  --brand-color: #f97316; /* Orange */
+}
+
+/* PFB Theme */
+[data-theme='pfb'] {
+  --brand-color: #3b82f6; /* Blue */
+}
+
+@layer components {
+  
+  .btn-dynamic {
+    @apply px-4 py-2 rounded font-medium transition-colors text-white;
+    background-color: var(--brand-color);
+  }
+}
