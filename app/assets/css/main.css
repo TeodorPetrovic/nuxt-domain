@@ -17,6 +17,11 @@
   --brand-color: #3b82f6; /* Blue */
 }
 
+/* TF Theme */
+[data-theme='tf'] {
+  --brand-color: #10b981; /* Emerald */
+}
+
 @layer components {
   
   .btn-dynamic {

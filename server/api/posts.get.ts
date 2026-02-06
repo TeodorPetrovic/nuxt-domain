@@ -1,31 +1,63 @@
 import { db } from '../database/db';
 
+interface Faculty {
+  faculty_id: number;
+  name: string;
+  subdomain: string;
+  created_at: string;
+}
+
 export default defineEventHandler((event) => {
-  const subdomain = event.node.req.headers.host?.split('.')[0] || '';
-  
-  let facultySubdomain = '';
-  if (subdomain === 'fir' || subdomain === 'pfb' || subdomain === 'tf') {
-    facultySubdomain = subdomain;
+  const host = event.node.req.headers.host ?? '';
+  const subdomain = host.includes('.') ? (host.split('.')[0] ?? '') : '';
+
+  const allowedSubdomains = new Set(['fir', 'pfb', 'tf']);
+  const isFacultySubdomain = allowedSubdomains.has(subdomain);
+
+  if (isFacultySubdomain) {
+    const faculty = db.prepare(`
+      SELECT * FROM faculty WHERE subdomain = ?
+    `).get(subdomain) as Faculty | undefined;
+
+    if (!faculty) {
+      return { posts: [] };
+    }
+
+    const posts = db.prepare(`
+      SELECT
+        p.post_id,
+        p.title,
+        p.content,
+        p.faculty_id as faculty_id,
+        f.name,
+        f.subdomain
+      FROM post p
+      LEFT JOIN faculty f ON p.faculty_id = f.faculty_id
+      WHERE p.faculty_id = ?
+      ORDER BY p.created_at DESC
+    `).all(faculty.faculty_id);
+
+    return {
+      posts,
+      faculty
+    };
   }
-  
-  const faculty = db.prepare(`
-    SELECT * FROM faculties WHERE subdomain = ?
-  `).get(facultySubdomain);
-  
-  if (!faculty) {
-    return { posts: [] };
-  }
-  
+
   const posts = db.prepare(`
-    SELECT p.*, f.name as faculty_name, f.subdomain
-    FROM posts p
-    JOIN faculties f ON p.faculty_id = f.id
-    WHERE p.faculty_id = ?
+    SELECT
+      p.post_id,
+      p.title,
+      p.content,
+      p.faculty_id as faculty_id,
+      f.name,
+      f.subdomain
+    FROM post p
+    LEFT JOIN faculty f ON p.faculty_id = f.faculty_id
     ORDER BY p.created_at DESC
-  `).all(faculty.id);
-  
+  `).all();
+
   return {
     posts,
-    faculty
+    faculty: null
   };
 });
