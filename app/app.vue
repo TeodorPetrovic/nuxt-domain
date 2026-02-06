@@ -1,5 +1,5 @@
 <script setup>
-const { activeSubdomain, activeTheme } = useSubdomain()
+const { activeTheme } = useSubdomain()
 
 useHead({
   htmlAttrs: {

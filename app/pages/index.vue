@@ -55,7 +55,7 @@ const pageTitle = computed(() => {
           <!-- Faculty -->
           <div class="flex items-center gap-2 text-sm mb-3">
             <span class="h-2.5 w-2.5 rounded-full bg-brand" />
-            Faculty:
+            Fakultet:
             <span class="font-semibold">
               {{ post.name || 'Univerzitet' }}
             </span>
@@ -71,13 +71,12 @@ const pageTitle = computed(() => {
             {{ post.content }}
           </p>
 
-          <!-- Actions -->
           <div class="mt-4 flex gap-2">
             <button class="px-3 py-1.5 rounded-lg text-sm font-medium border transition bg-brand text-white">
-              Open
+             Otvori 
             </button>
             <button class="px-3 py-1.5 rounded-lg text-sm font-medium border transition">
-              Share
+              Deli
             </button>
           </div>
         </article>
