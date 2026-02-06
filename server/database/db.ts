@@ -1,8 +1,19 @@
 import Database from 'better-sqlite3';
 import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
-const dbPath = join(process.cwd(), 'server/database/data.db');
+// Use environment variable or default to data directory at project root
+const dataDir = process.env.DB_PATH || join(process.cwd(), 'data');
+const dbPath = join(dataDir, 'data.db');
+
+// Ensure data directory exists
+if (!existsSync(dataDir)) {
+  mkdirSync(dataDir, { recursive: true });
+  console.log(`Created database directory: ${dataDir}`);
+}
+
 const db = new Database(dbPath);
+console.log(`Database initialized at: ${dbPath}`);
 
 // Create tables
 db.exec(`
